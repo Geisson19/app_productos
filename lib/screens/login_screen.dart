@@ -99,19 +99,30 @@ class _LoginForm extends StatelessWidget {
               color: Colors.deepPurple,
               disabledColor: Colors.grey,
               elevation: 0,
-              onPressed: () {
-                if (loginForm.isValidForm()) return;
+              onPressed: loginForm.isLoading
+                  ? null
+                  : () {
+                      if (!loginForm.isValidForm()) return;
 
-                Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-              },
+                      FocusScope.of(context).unfocus();
+                      loginForm.isLoading = true;
+
+                      // TODO: Backend request
+                      Future.delayed(const Duration(seconds: 1), () {
+                        loginForm.isLoading = false;
+                        Navigator.of(context).pushNamed(HomeScreen.routeName);
+                      });
+
+                      //Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+                    },
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                child: const Text("Ingresar",
-                    style: TextStyle(color: Colors.white, fontSize: 18)),
+                child: Text(loginForm.isLoading ? "Cargando..." : "Ingresar",
+                    style: const TextStyle(color: Colors.white, fontSize: 18)),
               )),
         ]));
   }
