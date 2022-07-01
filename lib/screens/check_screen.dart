@@ -18,6 +18,9 @@ class CheckAuthScreen extends StatelessWidget {
         child: FutureBuilder(
           future: authService.readToken(),
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (!snapshot.hasData) {
+              return const Text('');
+            }
             if (snapshot.data != "") {
               Future.microtask(() {
                 Navigator.pushReplacement(
@@ -32,7 +35,7 @@ class CheckAuthScreen extends StatelessWidget {
                     context,
                     PageRouteBuilder(
                         pageBuilder: (_, __, ___) => const LoginScreen(),
-                        transitionDuration: const Duration(milliseconds: 0)));
+                        transitionDuration: const Duration(seconds: 0)));
               });
             }
             return Container();

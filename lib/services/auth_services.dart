@@ -6,13 +6,14 @@ import 'package:productos/env.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService extends ChangeNotifier {
-  final sStorage = FlutterSecureStorage();
+  final sStorage = const FlutterSecureStorage();
 
   Future signUp(String email, String password) async {
     // Cuerpo de la petición
     final Map<String, dynamic> authData = {
       'email': email,
       'password': password,
+      'returnSecureToken': true,
     };
 
     final url = Uri.https(Env.firebaseApiUrl, 'v1/accounts:signUp', {
@@ -32,11 +33,12 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<String?> logIn(String email, String password) async {
+  Future logIn(String email, String password) async {
     // Cuerpo de la petición
     final Map<String, dynamic> authData = {
       'email': email,
       'password': password,
+      'returnSecureToken': true,
     };
 
     final url =
