@@ -5,10 +5,13 @@ import 'package:productos/models/models.dart';
 import 'package:http/http.dart' as http;
 
 class ProductsService extends ChangeNotifier {
-  final String _baseUrl = "flutter-apps-286ec-default-rtdb.firebaseio.com";
+  final String _baseUrl = "???";
   final List<ProductModel> products = [];
 
+  late ProductModel selectedProduct;
+
   bool isLoading = true;
+  bool isSaving = false;
 
   ProductsService() {
     loadProducts();
@@ -29,5 +32,37 @@ class ProductsService extends ChangeNotifier {
 
     isLoading = false;
     notifyListeners();
+  }
+
+  Future createOrUpdate(ProductModel product) async {
+    isSaving = true;
+    notifyListeners();
+
+    if (product.id != null) {
+      await _updateProduct(product);
+    } else {
+      await _createProduct(product);
+    }
+
+    isSaving = false;
+    notifyListeners();
+  }
+
+  _updateProduct(ProductModel product) async {
+    final url = Uri.https(_baseUrl, "products/${product.id}.json");
+    final response = await http.put(url, body: product.toJson());
+
+    if (response.statusCode == 200) {
+      final index = products.indexWhere((p) => p.id == product.id);
+      products[index] = product;
+    }
+  }
+
+  _createProduct(ProductModel product) async {
+    final url = Uri.https(_baseUrl, "products.json");
+    final response = await http.post(url, body: product.toJson());
+    final Map<String, dynamic> productMap = json.decode(response.body);
+    product.id = productMap["name"];
+    products.add(product);
   }
 }

@@ -10,6 +10,7 @@ class ProductModel {
     required this.name,
     required this.price,
     this.picture,
+    this.id,
   });
 
   bool available;
@@ -36,4 +37,14 @@ class ProductModel {
         "picture": picture,
         "price": price,
       };
+
+  ProductModel copy() {
+    return ProductModel(
+      available: available,
+      price: price,
+      name: name,
+      picture: picture,
+      id: id,
+    );
+  }
 }
