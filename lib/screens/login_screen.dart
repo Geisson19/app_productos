@@ -110,14 +110,16 @@ class _LoginForm extends StatelessWidget {
                       loginForm.isLoading = true;
 
                       try {
-                        final String? token = await authService.logIn(
+                        await authService.logIn(
                             loginForm.email, loginForm.password);
+
+                        // ignore: use_build_context_synchronously
                         Navigator.pushReplacementNamed(
                             context, HomeScreen.routeName);
                       } catch (e) {
                         loginForm.isLoading = false;
-                        loginForm.showError(
-                            context, e.toString().split(':')[1]);
+                        NotificationsService.showSnackbar(
+                            e.toString().replaceAll("Exception: ", ""));
                       }
 
                       loginForm.isLoading = false;

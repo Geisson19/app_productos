@@ -35,12 +35,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Productos App',
-      initialRoute: LoginScreen.routeName,
+      initialRoute: CheckAuthScreen.routeName,
+      scaffoldMessengerKey: NotificationsService.messengerKey,
       routes: {
-        HomeScreen.routeName: (context) => const HomeScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
-        ProductScreen.routeName: (context) => const ProductScreen(),
         RegisterScreen.routeName: (context) => const RegisterScreen(),
+        CheckAuthScreen.routeName: (context) => const CheckAuthScreen(),
+        HomeScreen.routeName: (context) => const HomeScreen(),
+        ProductScreen.routeName: (context) => const ProductScreen(),
       },
       theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: Colors.grey[300],
