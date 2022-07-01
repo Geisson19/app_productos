@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:productos/env.dart';
 import 'package:productos/models/models.dart';
 import 'package:http/http.dart' as http;
 
 class ProductsService extends ChangeNotifier {
-  final String _baseUrl = "???";
   final List<ProductModel> products = [];
 
   late ProductModel selectedProduct;
@@ -23,7 +23,7 @@ class ProductsService extends ChangeNotifier {
   Future loadProducts() async {
     isLoading = true;
     notifyListeners();
-    final url = Uri.https(_baseUrl, "products.json");
+    final url = Uri.https(Env.baseUrlProductos, "products.json");
     final response = await http.get(url);
     final Map<String, dynamic> productsMap = json.decode(response.body);
 
@@ -52,7 +52,7 @@ class ProductsService extends ChangeNotifier {
   }
 
   void _updateProduct(ProductModel product) async {
-    final url = Uri.https(_baseUrl, "products/${product.id}.json");
+    final url = Uri.https(Env.baseUrlProductos, "products/${product.id}.json");
     final response = await http.put(url, body: product.toJson());
 
     if (response.statusCode == 200) {
@@ -63,7 +63,7 @@ class ProductsService extends ChangeNotifier {
   }
 
   void _createProduct(ProductModel product) async {
-    final url = Uri.https(_baseUrl, "products.json");
+    final url = Uri.https(Env.baseUrlProductos, "products.json");
     final response = await http.post(url, body: product.toJson());
     final Map<String, dynamic> productMap = json.decode(response.body);
     product.id = productMap["name"];
@@ -84,7 +84,7 @@ class ProductsService extends ChangeNotifier {
     isSaving = true;
     notifyListeners();
 
-    final url = Uri.parse("???");
+    final url = Uri.parse(Env.cloudifyUrl);
 
     final imageUploadRequest = http.MultipartRequest("POST", url);
     final file = await http.MultipartFile.fromPath("file", newImage!.path);

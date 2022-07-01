@@ -5,10 +5,10 @@ import 'package:productos/ui/input_decoration.dart';
 import 'package:productos/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
-  static const String routeName = '/login';
+  static const String routeName = '/register';
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class LoginScreen extends StatelessWidget {
               child: Column(
             children: [
               const SizedBox(height: 10),
-              Text("Ingreso", style: Theme.of(context).textTheme.headline4),
+              Text("Registro", style: Theme.of(context).textTheme.headline4),
               const SizedBox(height: 30),
               ChangeNotifierProvider(
                 create: (_) => LoginFormProvider(),
@@ -34,9 +34,9 @@ class LoginScreen extends StatelessWidget {
           )),
           const SizedBox(height: 50),
           AuthTextButton(
-              text: 'Crear cuenta',
+              text: '¿Ya tienes cuenta?',
               onPressed: () =>
-                  {Navigator.pushNamed(context, RegisterScreen.routeName)}),
+                  {Navigator.pushNamed(context, LoginScreen.routeName)}),
           const SizedBox(height: 50),
         ],
       ),
@@ -118,7 +118,7 @@ class _LoginForm extends StatelessWidget {
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                child: Text(loginForm.isLoading ? "Cargando..." : "Ingresar",
+                child: Text(loginForm.isLoading ? "Cargando..." : "Registrarme",
                     style: const TextStyle(color: Colors.white, fontSize: 18)),
               )),
         ]));
