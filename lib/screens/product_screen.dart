@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:productos/providers/product_form_provider.dart';
 import 'package:productos/services/products_service.dart';
 import 'package:productos/ui/input_decoration.dart';
@@ -45,7 +46,7 @@ class _ProductScreenBody extends StatelessWidget {
                 children: [
                   ProductImage(productsService.selectedProduct.picture),
                   const _BackArrow(),
-                  const _GalleryButton()
+                  _GalleryButton(productsService)
                 ],
               ),
               const _ProductInfo(),
@@ -55,11 +56,22 @@ class _ProductScreenBody extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (!productFormProvider.isValid()) return;
-          productsService.createOrUpdate(productFormProvider.product);
-        },
-        child: const Icon(Icons.save_rounded),
+        onPressed: productsService.isSaving
+            ? null
+            : () async {
+                if (!productFormProvider.isValid()) return;
+
+                final String? imageUrl = await productsService.uploadImage();
+                if (imageUrl != null) {
+                  productFormProvider.product.picture = imageUrl;
+                }
+                productsService.createOrUpdate(productFormProvider.product);
+              },
+        child: productsService.isSaving
+            ? const CircularProgressIndicator(
+                color: Colors.white,
+              )
+            : const Icon(Icons.save_rounded),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     );
@@ -67,9 +79,12 @@ class _ProductScreenBody extends StatelessWidget {
 }
 
 class _GalleryButton extends StatelessWidget {
-  const _GalleryButton({
+  const _GalleryButton(
+    this.productsService, {
     Key? key,
   }) : super(key: key);
+
+  final ProductsService productsService;
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +93,15 @@ class _GalleryButton extends StatelessWidget {
       right: 20,
       child: IconButton(
         icon: const Icon(Icons.camera_enhance, color: Colors.white, size: 30),
-        onPressed: () {
-          // TODO: Camera button
+        onPressed: () async {
+          final picker = ImagePicker();
+          final XFile? pickedFile = await picker.pickImage(
+            source: ImageSource.camera,
+          );
+
+          if (pickedFile == null) return;
+
+          productsService.updateSelectedProductImage(pickedFile.path);
         },
       ),
     );

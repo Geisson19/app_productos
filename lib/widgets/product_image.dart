@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ProductImage extends StatelessWidget {
@@ -14,16 +16,9 @@ class ProductImage extends StatelessWidget {
         height: 450,
         width: double.infinity,
         child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(45), topRight: Radius.circular(45)),
-          child: FadeInImage(
-            image: imageUrl != null
-                ? NetworkImage(imageUrl!) as ImageProvider
-                : const AssetImage('assets/no-image.png'),
-            placeholder: const AssetImage('assets/jar-loading.gif'),
-            fit: BoxFit.cover,
-          ),
-        ),
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(45), topRight: Radius.circular(45)),
+            child: _getImage(imageUrl)),
       ),
     );
   }
@@ -39,5 +34,26 @@ class ProductImage extends StatelessWidget {
               blurRadius: 10,
               offset: const Offset(0, 5))
         ]);
+  }
+
+  Widget _getImage(String? picture) {
+    if (picture == null) {
+      return const Image(
+        image: AssetImage('assets/no-image.png'),
+        fit: BoxFit.cover,
+      );
+    }
+
+    if (picture.startsWith('http')) {
+      return FadeInImage(
+          placeholder: const AssetImage('assets/jar-loading.gif'),
+          image: NetworkImage(picture),
+          fit: BoxFit.cover);
+    }
+
+    return Image.file(
+      File(picture),
+      fit: BoxFit.cover,
+    );
   }
 }
