@@ -17,4 +17,24 @@ class LoginFormProvider extends ChangeNotifier {
   bool isValidForm() {
     return formKey.currentState?.validate() ?? false;
   }
+
+  showError(BuildContext context, String error) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 2,
+        title: const Text("Error de autenticación"),
+        content: Text(error),
+        actions: [
+          TextButton(
+            child: const Text("Cerrar"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
 }

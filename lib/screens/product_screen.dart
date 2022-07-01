@@ -59,8 +59,8 @@ class _ProductScreenBody extends StatelessWidget {
         onPressed: productsService.isSaving
             ? null
             : () async {
+                FocusScope.of(context).unfocus();
                 if (!productFormProvider.isValid()) return;
-
                 final String? imageUrl = await productsService.uploadImage();
                 if (imageUrl != null) {
                   productFormProvider.product.picture = imageUrl;
